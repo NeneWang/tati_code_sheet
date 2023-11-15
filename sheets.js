@@ -7,7 +7,7 @@ const SHEET_NAME = 'Remitos'
 let query = encodeURIComponent('SELECT *');
 const URL = BASE + `sheet=${SHEET_NAME}&headers=1&tq=${query}`;
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('DOM loaded')
+    // console.log('DOM loaded')
     fetch(URL).then(res => res.text()).then(text => {
         // console.log(text)
         const jsData = JSON.parse(text.substr(47).slice(0, -2))
