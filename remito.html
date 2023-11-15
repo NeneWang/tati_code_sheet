@@ -166,6 +166,12 @@
 
               celdaCantidad.innerText = producto.cantidad;
               celdaNombre.innerText = producto.nombre;
+
+              // Check if there is a price override
+              if (USER_DATA["$" + key] && USER_DATA["$" + key] != '') {
+                producto.precio = USER_DATA["$" + key];
+              }
+
               celdaPrecio.innerText = producto.precio.toLocaleString();
               celdaTotal.innerText = (
                 producto.cantidad * producto.precio
@@ -182,7 +188,7 @@
             var celdaPrecio = fila.insertCell(2);
             var celdaTotal = fila.insertCell(3);
 
-            celdaCantidad.innerText = 1;
+            //celdaCantidad.innerText = '-';
             celdaNombre.innerText = "Debe";
             celdaPrecio.innerText = USER_DATA["debe"].toLocaleString();
             celdaTotal.innerText = USER_DATA["debe"].toLocaleString();
