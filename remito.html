@@ -43,6 +43,7 @@
     const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?`;
 
     const SHEET_NAME = "Remitos";
+    const PRICE_SHEET_NAME = "Precios";
 
     let query = encodeURIComponent("SELECT *");
     const URL = BASE + `sheet=${SHEET_NAME}&headers=1&tq=${query}`;
@@ -69,6 +70,8 @@
         precio: 24000,
       },
     };
+
+
 
     document.addEventListener("DOMContentLoaded", function () {
       Object.defineProperty(String.prototype, "capitalize", {
@@ -103,6 +106,48 @@
       const today_date = new Date();
       let formatted_date = today_date.toLocaleDateString("es-ES"); // 'es-ES' para formato español, puedes ajustarlo según tu localidad
       document.getElementById("fecha").innerText = formatted_date;
+
+      // Update the prices
+      const prices_cols = [];
+      const prices_data = {};
+      fetch(BASE + `sheet=${PRICE_SHEET_NAME}&headers=1&tq=${query}`)
+        .then((res) => res.text())
+        .then((text) => {
+          const jsData = JSON.parse(text.substr(47).slice(0, -2));
+         jsData.table.cols.forEach((heading) => {
+            if (heading.label) {
+              const propName = heading.label.toLowerCase();
+              // console.log(propName`)
+              prices_cols.push(propName);
+            }
+          });
+          
+          jsData["table"]["rows"].forEach((main) => {
+            const row = {};
+            main.c.forEach((cell, i) => {
+              //row[colz[i]] = cell ? cell.v : null;
+              //console.log('prices cols', prices_cols[i])
+              row[prices_cols[i]] = cell ? cell.v : null;
+              
+
+            });
+            prices_data[main.c[0].v] = row;
+          });
+
+          console.log('____prices____')
+          console.table(prices_data);
+          // Update Productos 
+          Object.keys(PRODUCTOS).forEach((key) => {
+            const upper_key = key.toUpperCase();
+            console.log('upper_key', upper_key, prices_data[upper_key], PRODUCTOS[upper_key])
+            if (prices_data[upper_key] && prices_data[upper_key]["precio"] && prices_data[upper_key]["precio"] != '') {
+              PRODUCTOS[key]["precio"] = prices_data[upper_key]["precio"];
+            }
+          });
+          console.log("Updated PRODUCTS")
+          console.table(PRODUCTOS);
+
+        });
 
       const data = [];
       const colz = [];
