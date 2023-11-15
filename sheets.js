@@ -1,10 +1,10 @@
 
-const SHEET_ID = '1iIH5JafHEYD3NusdedZcgGVby21wViVBAk_OyApeFX0';
+const SHEET_ID = "1iIH5JafHEYD3NusdedZcgGVby21wViVBAk_OyApeFX0";
 const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?`;
 
-const SHEET_NAME = 'Remitos'
+const SHEET_NAME = "Remitos";
 
-let query = encodeURIComponent('SELECT *');
+let query = encodeURIComponent("SELECT *");
 const URL = BASE + `sheet=${SHEET_NAME}&headers=1&tq=${query}`;
 
 const output = document.querySelector('.output')
@@ -12,7 +12,7 @@ const output = document.querySelector('.output')
 document.addEventListener('DOMContentLoaded', function () {
     const data = []
     const colz = []
-    console.log('DOM loaded')
+    
     fetch(URL).then(res => res.text()).then(text => {
         // console.log(text)
         const jsData = JSON.parse(text.substr(47).slice(0, -2))
@@ -33,41 +33,33 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             data.push(row)
         })
+
+        console.log('_____data _____')
         console.table(data)
         maker(data);
     })
 });
 
-function maker(json){
+function maker(json) {
     console.log('calling maker')
-    const div = document.createElement('div')
-    div.style.display = 'grid'
-    div.style.gridTemplateColumns = 'repeat(10, 1fr)'
-    output.append(div)
+    
     let first = true
+    var tabla = document.getElementById("clientes-tabla");
     json.forEach((el) => {
+        console.log('el', el)
+
+        var fila = tabla.insertRow();
+
+        var celdaCliente = fila.insertCell(0);
+        var total = fila.insertCell(1);
+        var celdaLink = fila.insertCell(1);
+
+        celdaCliente.innerHTML = el["cliente"];
         
-        const keys = Object.keys(el);
-        
-        if(first){
-            keys.forEach((key) => {
-                const ele = document.createElement('div')
-                ele.textContent = key.toUpperCase();
-                ele.style.fontWeight = 'bold'
-                // ele.innerText = key
-                div.append(ele)
-            })
-            first = false
-        }
 
-
-        keys.forEach((key) => {
-            const span = document.createElement('span')
-            span.innerText = el[key]
-            div.append(span)
-        })
-
-        console.log(keys)
+        // celdaRemito.innerHTML = el.remito;
+        const link = `remito.html?cliente=${el.cliente}`
+        celdaLink.innerHTML = `<a target="_blank" href="${link}">Ver</a>`
     })
 }
 
