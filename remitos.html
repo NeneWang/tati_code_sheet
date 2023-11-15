@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Remito</title>
+    <style>
+      /* Aquí puedes añadir estilos para hacerlo más presentable */
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 10px;
+      }
+      th {
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Remito</h2>
+    <p><strong>Número de Remito:</strong></p>
+    <p><strong>Fecha:</strong> <span id="fecha"></span></p>
+    <p><strong>Nombre del Cliente:</strong> <span id="cliente"></span></p>
+    <p><strong>Dirección:</strong> <span id="direccion_cliente"></span></p>
+
+    <h3>Detalle de los Artículos</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Cantidad</th>
+          <th>Descripción</th>
+          <th>Precio Unitario</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="productos-tabla">
+        <!-- Las filas de productos se insertarán aquí -->
+      </tbody>
+    </table>
+
+    <p><strong>Total General:</strong> $ <span id="total_general"></span></p>
+
+    <p>Firma del Cliente: ______________________</p>
+    <p>Firma del Emisor: ______________________</p>
+  </body>
+
+  <script>
+    const SHEET_ID = "1iIH5JafHEYD3NusdedZcgGVby21wViVBAk_OyApeFX0";
+    const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?`;
+
+    const SHEET_NAME = "Remitos";
+
+    let query = encodeURIComponent("SELECT *");
+    const URL = BASE + `sheet=${SHEET_NAME}&headers=1&tq=${query}`;
+
+    const PRODUCTOS = {
+      b1: {
+        nombre: "B1",
+        precio: 15200,
+      },
+      b2: {
+        nombre: "B2",
+        precio: 14400,
+      },
+      b3: {
+        nombre: "B3",
+        precio: 13800,
+      },
+      c1: {
+        nombre: "C1",
+        precio: 14800,
+      },
+      c2: {
+        nombre: "C2",
+        precio: 24000,
+      },
+    };
+
+    document.addEventListener("DOMContentLoaded", function () {
+      // Esta función analiza los parámetros de la URL
+      function getQueryParam(param) {
+        var queryString = window.location.search.substring(1);
+        var params = queryString.split("&");
+        for (var i = 0; i < params.length; i++) {
+          var pair = params[i].split("=");
+          if (pair[0] == param) {
+            return decodeURIComponent(pair[1]);
+          }
+        }
+        return null;
+      }
+
+      // Llenar los datos en el HTML
+      document.getElementById("cliente").innerText =
+        getQueryParam("CLIENTES") || "No especificado";
+      // Repite este paso para cada elemento que necesites llenar
+      const today_date = new Date();
+      let formatted_date = today_date.toLocaleDateString("es-ES"); // 'es-ES' para formato español, puedes ajustarlo según tu localidad
+      document.getElementById("fecha").innerText = formatted_date;
+
+      const data = [];
+      const colz = [];
+      let USER_DATA = {};
+      fetch(URL)
+        .then((res) => res.text())
+        .then((text) => {
+          const jsData = JSON.parse(text.substr(47).slice(0, -2));
+
+          jsData.table.cols.forEach((heading) => {
+            if (heading.label) {
+              const propName = heading.label.toLowerCase();
+              // console.log(propName`)
+              colz.push(propName);
+            }
+          });
+          jsData["table"]["rows"].forEach((main) => {
+            const row = {};
+            main.c.forEach((cell, i) => {
+              row[colz[i]] = cell ? cell.v : null;
+            });
+            data.push(row);
+          });
+          console.table(data);
+
+          data.forEach((userdata) => {
+            // console.log(userdata["cliente"]);
+            if (
+              userdata["cliente"].toUpperCase() ==
+              getQueryParam("CLIENTES").toUpperCase()
+            ) {
+              USER_DATA = userdata;
+            }
+          });
+
+          // USER DATA?
+          console.log("userdata", USER_DATA);
+          document.getElementById("direccion_cliente").innerText =
+            USER_DATA["direccion"] || "No especificado";
+          const mappedProductData = {};
+          Object.keys(PRODUCTOS).forEach((key) => {
+            if (USER_DATA[key] && USER_DATA[key] > 0) {
+              mappedProductData[key] = {
+                cantidad: USER_DATA[key],
+                nombre: PRODUCTOS[key]["nombre"],
+                precio: PRODUCTOS[key]["precio"],
+                total: USER_DATA[key] * PRODUCTOS[key]["precio"],
+              };
+            }
+          });
+
+          console.log("mappedProductData", mappedProductData);
+          var tabla = document.getElementById("productos-tabla");
+          let total = 0;
+          for (var key in mappedProductData) {
+            if (mappedProductData.hasOwnProperty(key)) {
+              var producto = mappedProductData[key];
+              var fila = tabla.insertRow();
+
+              var celdaCantidad = fila.insertCell(0);
+              var celdaNombre = fila.insertCell(1);
+              var celdaPrecio = fila.insertCell(2);
+              var celdaTotal = fila.insertCell(3);
+
+              celdaCantidad.innerText = producto.cantidad;
+              celdaNombre.innerText = producto.nombre;
+              celdaPrecio.innerText = producto.precio.toLocaleString();
+              celdaTotal.innerText = (
+                producto.cantidad * producto.precio
+              ).toLocaleString();
+              total += producto.cantidad * producto.precio;
+            }
+          }
+
+          if (USER_DATA["debe"] && USER_DATA["debe"] > 0) {
+            var fila = tabla.insertRow();
+
+            var celdaCantidad = fila.insertCell(0);
+            var celdaNombre = fila.insertCell(1);
+            var celdaPrecio = fila.insertCell(2);
+            var celdaTotal = fila.insertCell(3);
+
+            celdaCantidad.innerText = 1;
+            celdaNombre.innerText = "Debe";
+            celdaPrecio.innerText = USER_DATA["debe"].toLocaleString();
+            celdaTotal.innerText = USER_DATA["debe"].toLocaleString();
+            total += USER_DATA["debe"];
+          }
+
+          document.getElementById("total_general").innerText =
+            total.toLocaleString();
+        });
+    });
+  </script>
+</html>
