@@ -21,6 +21,7 @@
   </head>
   <body>
     <h2>Remito</h2>
+    <p>Documento no valido como factura</p>
     <p><strong>Número de Remito:</strong></p>
     <p><strong>Fecha:</strong> <span id="fecha"></span></p>
     <p><strong>Nombre del Cliente:</strong> <span id="cliente"></span></p>
@@ -92,10 +93,11 @@
         }
         return null;
       }
+      const CLIENTE = getQueryParam("cliente");
 
       // Llenar los datos en el HTML
       document.getElementById("cliente").innerText =
-        getQueryParam("CLIENTES") || "No especificado";
+        CLIENTE || "No especificado";
       // Repite este paso para cada elemento que necesites llenar
       const today_date = new Date();
       let formatted_date = today_date.toLocaleDateString("es-ES"); // 'es-ES' para formato español, puedes ajustarlo según tu localidad
@@ -129,7 +131,7 @@
             // console.log(userdata["cliente"]);
             if (
               userdata["cliente"].toUpperCase() ==
-              getQueryParam("CLIENTES").toUpperCase()
+              CLIENTE.toUpperCase()
             ) {
               USER_DATA = userdata;
             }
