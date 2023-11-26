@@ -175,15 +175,19 @@
 
           data.forEach((userdata) => {
             // console.log(userdata["cliente"]);
-            if (userdata["cliente"].toUpperCase() == CLIENTE.toUpperCase()) {
+            console.log("===========")
+            console.log(userdata["cliente"])
+            if(userdata["cliente"] == undefined || userdata["cliente"] == null) {
+             
+            }else if (userdata["cliente"].toUpperCase() == CLIENTE.toUpperCase()) {
               USER_DATA = userdata;
             }
           });
 
           // USER DATA?
-          console.log("userdata", USER_DATA);
+          
           document.getElementById("direccion_cliente").innerText =
-            USER_DATA["direccion"].capitalize() || "No especificado";
+            USER_DATA["direccion"]?.capitalize() || "No especificado";
           const mappedProductData = {};
           Object.keys(PRODUCTOS).forEach((key) => {
             if (USER_DATA[key] && USER_DATA[key] > 0) {
