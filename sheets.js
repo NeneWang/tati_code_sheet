@@ -60,8 +60,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const param = "clientes[]";
         const url = "multiple.html?" + param + "=" + selected.join("&" + param + "=");
-        console.log(url)
+        // console.log(url)
+        // Open the new window with the url
 
+
+        // Open a new tab with the specified URL
+        window.open(url, '_blank');
     });
 
 
@@ -70,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Add event listener to the button
     btn_select_completed.addEventListener('click', function () {
-        
+
         // Get all checkboxes
         var checkboxes = document.querySelectorAll('input[type=checkbox]');
 
@@ -78,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
         for (var i = 0; i < checkboxes.length; i++) {
             // Clean Selection
             checkboxes[i].checked = false;
-            
+
         }
 
     });
@@ -187,7 +191,7 @@ function maker(json) {
             checkboxElement.checked = true;
         }
 
-        
+
 
 
         // Add CSS to make the checkbox larger
