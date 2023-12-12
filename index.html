@@ -1,28 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Auto Remito</title>
     <link rel="stylesheet" href="./remito.css" />
-</head>
-<body>
+  </head>
+  <body>
     <h3>Clientes</h3>
-    <p>Los datos fueron extraidos del este <a target="_blank" href="https://docs.google.com/spreadsheets/d/1iIH5JafHEYD3NusdedZcgGVby21wViVBAk_OyApeFX0/edit?usp=sharing">Google Sheets</a></p>
-     <table>
+    <p>
+      Los datos fueron extraidos del este
+      <a
+        target="_blank"
+        href="https://docs.google.com/spreadsheets/d/1iIH5JafHEYD3NusdedZcgGVby21wViVBAk_OyApeFX0/edit?usp=sharing"
+        >Google Sheets</a
+      >
+    </p>
+    <table>
       <thead>
         <tr>
-            <!-- <th>Numero Remito</th> -->
+          <!-- <th>Numero Remito</th> -->
           <th>Cliente</th>
-          
+
           <th>Link del Remito</th>
+          <th>Detalles</th>
+          <th>Seleccionar</th>
         </tr>
       </thead>
       <tbody id="clientes-tabla">
         <!-- Las filas de productos se insertarán aquí -->
       </tbody>
     </table>
-</body>
-<script 
-src="sheets.js"></script>
+  </body>
+  <script src="sheets.js"></script>
 </html>

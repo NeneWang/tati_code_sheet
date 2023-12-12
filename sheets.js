@@ -12,7 +12,7 @@ const output = document.querySelector('.output')
 document.addEventListener('DOMContentLoaded', function () {
     const data = []
     const colz = []
-    
+
     fetch(URL).then(res => res.text()).then(text => {
         // console.log(text)
         const jsData = JSON.parse(text.substr(47).slice(0, -2))
@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 colz.push(propName)
             }
         })
-        console.log(jsData['table']['rows'])
-        console.table(jsData['table']['cols'])
+        // console.log(jsData['table']['rows'])
+        // console.table(jsData['table']['cols'])
         jsData['table']['rows'].forEach((main) => {
             const row = {}
             main.c.forEach((cell, i) => {
@@ -34,32 +34,106 @@ document.addEventListener('DOMContentLoaded', function () {
             data.push(row)
         })
 
-        console.log('_____data _____')
-        console.table(data)
+        // console.log('_____data _____')
+        // console.table(data)
         maker(data);
     })
 });
 
-function maker(json) {
-    console.log('calling maker')
+/**
+ * Prints the details of the products and any special prices
+* @param {dict} detalles:
+{
+    "cliente": "PARA KONA",
+    "huevo": "campo ",
+    "contacto": null,
+    "direccion": "CASTAÑEDA 1899",
+    "horario": "8.00am",
+    "b1": 1,
+    "b2": 2,
+    "b3": null,
+    "c1": null,
+    "c2": null,
+    "termosel": null,
+    "debe": null,
+    "gan.uni": null,
+    "ingresa rep": null,
+    "$b1": 25000,
+    "$b2": 24000,
+    "campo ": 27000,
+    "$c1": null,
+    "$c2": null,
+    "undefined": null
+}
+
+    @returns {string} detalles:
+    " b1 - 1: 25000; b2 - 2: 24000 "
+ */
+function detallesPrinter(detalles) {
+
+    const HUEVOS = ["b1", "b2", "b3", "c1", "c2"]
+    const PRECIOS_ESPECIALES = HUEVOS.map((el) => "$" + el);
+
+    const HUEVOS_COMPRADOS = {}
     
-    let first = true
+    for (const key in HUEVOS) {
+        const element = HUEVOS[key];
+        if (detalles[element]) {
+            HUEVOS_COMPRADOS[element] = detalles[element]
+        }
+    }
+
+    let detallesPrint = "";
+    for (const key in HUEVOS_COMPRADOS) {
+        const special_price_key = "$" + key;
+        const element = HUEVOS_COMPRADOS[key];
+        const precio_especial = detalles[special_price_key]
+
+        detallesPrint += `${key} - ${element}`
+        if (precio_especial) {
+            detallesPrint += `: \$${precio_especial}`
+        }
+        detallesPrint += "; ";
+    }
+
+    return detallesPrint;
+
+
+}
+
+function maker(json) {
     var tabla = document.getElementById("clientes-tabla");
     json.forEach((el) => {
-        console.log('el', el)
+        console.log(el)
 
         var fila = tabla.insertRow();
 
         var celdaCliente = fila.insertCell(0);
         var total = fila.insertCell(1);
         var celdaLink = fila.insertCell(1);
+        var detalles = fila.insertCell(2);
+        var checkbox = fila.insertCell(3);
 
         celdaCliente.innerHTML = el["cliente"];
-        
+
 
         // celdaRemito.innerHTML = el.remito;
         const link = `remito.html?cliente=${el.cliente}`
         celdaLink.innerHTML = `<a target="_blank" href="${link}">Ver</a>`
+
+        // Create basic details
+        const detallesPrint = detallesPrinter(el)
+        detalles.innerHTML = detallesPrint;
+
+
+        // Create a checkbox
+        var checkboxElement = document.createElement('input');
+        checkboxElement.type = "checkbox";
+        checkboxElement.name = "name";
+        checkboxElement.value = "value";
+
+        // Append the checkbox to the third cell
+        checkbox.appendChild(checkboxElement);
     })
 }
 
