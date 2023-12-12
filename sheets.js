@@ -38,6 +38,24 @@ document.addEventListener('DOMContentLoaded', function () {
         // console.table(data)
         maker(data);
     })
+
+    // Get the button
+    var button = document.querySelector('#print_multiple');
+
+    // Add event listener to the button
+    button.addEventListener('click', function () {
+        // Get all checkboxes
+        var checkboxes = document.querySelectorAll('input[type=checkbox]');
+
+        // Iterate over all checkboxes
+        for (var i = 0; i < checkboxes.length; i++) {
+            // If the checkbox is checked
+            if (checkboxes[i].checked) {
+                // Log the value of the checkbox
+                console.log(checkboxes[i].value);
+            }
+        }
+    });
 });
 
 /**
@@ -75,7 +93,7 @@ function detallesPrinter(detalles) {
     const PRECIOS_ESPECIALES = HUEVOS.map((el) => "$" + el);
 
     const HUEVOS_COMPRADOS = {}
-    
+
     for (const key in HUEVOS) {
         const element = HUEVOS[key];
         if (detalles[element]) {
@@ -129,11 +147,18 @@ function maker(json) {
         // Create a checkbox
         var checkboxElement = document.createElement('input');
         checkboxElement.type = "checkbox";
-        checkboxElement.name = "name";
-        checkboxElement.value = "value";
+        checkboxElement.name = "select";
+        checkboxElement.value = `${el.cliente}`;
+
+
+        // Add CSS to make the checkbox larger
+        checkboxElement.style.width = "100%";
+        checkboxElement.style.height = "100%";
 
         // Append the checkbox to the third cell
         checkbox.appendChild(checkboxElement);
     })
 }
+
+
 
