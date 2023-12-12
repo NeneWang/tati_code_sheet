@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // USER DATA?
 
             document.getElementById("direccion_cliente").innerText =
-                USER_DATA["direccion"]?.capitalize() || "No especificado";
+                USER_DATA["direccion"]?.capitalize() || "";
             const mappedProductData = {};
             Object.keys(PRODUCTOS).forEach((key) => {
                 if (USER_DATA[key] && USER_DATA[key] > 0) {
