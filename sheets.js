@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // console.log(text)
         const jsData = JSON.parse(text.substr(47).slice(0, -2))
         // console.table(jsData['table']['rows'])
+
         jsData.table.cols.forEach((heading) => {
             if (heading.label) {
                 const propName = heading.label.toLowerCase();
@@ -40,21 +41,27 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
     // Get the button
-    var button = document.querySelector('#clean_select');
+    var button = document.querySelector('#print_multiple');
+
 
     // Add event listener to the button
     button.addEventListener('click', function () {
         // Get all checkboxes
         var checkboxes = document.querySelectorAll('input[type=checkbox]');
-
+        const selected = [];
         // Iterate over all checkboxes
         for (var i = 0; i < checkboxes.length; i++) {
             // If the checkbox is checked
             if (checkboxes[i].checked) {
                 // Log the value of the checkbox
-                console.log(checkboxes[i].value);
+                selected.push(checkboxes[i].value);
             }
         }
+
+        const param = "clientes[]";
+        const url = "multiple.html?" + param + "=" + selected.join("&" + param + "=");
+        console.log(url)
+
     });
 
 
@@ -176,7 +183,7 @@ function maker(json) {
         checkboxElement.value = `${el.cliente}`;
 
         // auto select if details exists
-        if (detallesPrint) {
+        if (detallesPrint && el["cliente"]) {
             checkboxElement.checked = true;
         }
 
