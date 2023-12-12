@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
     // Get the button
-    var button = document.querySelector('#print_multiple');
+    var button = document.querySelector('#clean_select');
 
     // Add event listener to the button
     button.addEventListener('click', function () {
@@ -56,6 +56,27 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     });
+
+
+    // Select Completed button
+    var btn_select_completed = document.querySelector('#clean_select');
+
+    // Add event listener to the button
+    btn_select_completed.addEventListener('click', function () {
+        
+        // Get all checkboxes
+        var checkboxes = document.querySelectorAll('input[type=checkbox]');
+
+        // Iterate over all checkboxes
+        for (var i = 0; i < checkboxes.length; i++) {
+            // Clean Selection
+            checkboxes[i].checked = false;
+            
+        }
+
+    });
+
+
 });
 
 /**
@@ -119,6 +140,10 @@ function detallesPrinter(detalles) {
 
 }
 
+function get_remito_link(cliente) {
+    return `remito.html?cliente=${cliente}`
+}
+
 function maker(json) {
     var tabla = document.getElementById("clientes-tabla");
     json.forEach((el) => {
@@ -136,7 +161,7 @@ function maker(json) {
 
 
         // celdaRemito.innerHTML = el.remito;
-        const link = `remito.html?cliente=${el.cliente}`
+        const link = get_remito_link(el.cliente)
         celdaLink.innerHTML = `<a target="_blank" href="${link}">Ver</a>`
 
         // Create basic details
@@ -149,6 +174,13 @@ function maker(json) {
         checkboxElement.type = "checkbox";
         checkboxElement.name = "select";
         checkboxElement.value = `${el.cliente}`;
+
+        // auto select if details exists
+        if (detallesPrint) {
+            checkboxElement.checked = true;
+        }
+
+        
 
 
         // Add CSS to make the checkbox larger
