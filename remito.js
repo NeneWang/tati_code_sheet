@@ -18,8 +18,8 @@ const PRODUCTOS = {
         nombre: "Blanco 2",
         precio: 14400,
     },
-    b3: {
-        nombre: "Blanco 3",
+    campo: {
+        nombre: "Campo",
         precio: 13800,
     },
     c1: {
@@ -59,6 +59,8 @@ document.addEventListener("DOMContentLoaded", function () {
         return null;
     }
     const CLIENTE = getQueryParam("cliente");
+    const DATE = getQueryParam("date");
+    console.log("Date", DATE);
 
     // Llenar los datos en el HTML
     document.getElementById("cliente").innerText =
@@ -66,7 +68,17 @@ document.addEventListener("DOMContentLoaded", function () {
     // Repite este paso para cada elemento que necesites llenar
     const today_date = new Date();
     let formatted_date = today_date.toLocaleDateString("es-ES"); // 'es-ES' para formato español, puedes ajustarlo según tu localidad
+
+
     document.getElementById("fecha").innerText = formatted_date;
+
+    // Si hay una fecha en la URL, usar esa
+    if (DATE) {
+        // Date is on format of 2023-12-13
+        const date_parts = DATE.split("-");
+        const date = new Date(date_parts[0], date_parts[1] - 1, date_parts[2]);
+        document.getElementById("fecha").innerText = date.toLocaleDateString("es-ES");
+    }
 
     // Update the prices
     const prices_cols = [];

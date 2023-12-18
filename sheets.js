@@ -59,9 +59,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const param = "clientes[]";
-        const url = "multiple.html?" + param + "=" + selected.join("&" + param + "=");
+        let url = "multiple.html?" + param + "=" + selected.join("&" + param + "=");
         // console.log(url)
         // Open the new window with the url
+
+        // Get the selected date from the date picker
+        var date = document.getElementById('start').value;
+
+        // If a date is selected, append it to the URL
+        if (date) {
+            url += "&date=" + date;
+        }
+
 
 
         // Open a new tab with the specified URL
@@ -121,13 +130,18 @@ document.addEventListener('DOMContentLoaded', function () {
  */
 function detallesPrinter(detalles) {
 
-    const HUEVOS = ["b1", "b2", "b3", "c1", "c2"]
+    const HUEVOS = ["b1", "b2", "c1", "c2", "campo"]
     const PRECIOS_ESPECIALES = HUEVOS.map((el) => "$" + el);
 
     const HUEVOS_COMPRADOS = {}
+    
+    console.log('+++++++++++++++++++++++');
+    console.log(HUEVOS);
+    console.log(detalles)
 
     for (const key in HUEVOS) {
         const element = HUEVOS[key];
+        console.log(element, key);
         if (detalles[element]) {
             HUEVOS_COMPRADOS[element] = detalles[element]
         }
@@ -151,8 +165,12 @@ function detallesPrinter(detalles) {
 
 }
 
-function get_remito_link(cliente) {
-    return `remito.html?cliente=${cliente}`
+function get_remito_link(cliente, {date = ""} = {}) {
+    let url = `remito.html?cliente=${cliente}`
+    if (date) {
+        url += `&date=${date}`
+    }
+    return url
 }
 
 function maker(json) {
