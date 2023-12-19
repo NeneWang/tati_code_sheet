@@ -8,6 +8,7 @@ let query = encodeURIComponent("SELECT *");
 const URL = BASE + `sheet=${SHEET_NAME}&headers=1&tq=${query}`;
 
 const output = document.querySelector('.output')
+var selected_date;
 
 document.addEventListener('DOMContentLoaded', function () {
     const data = []
@@ -42,6 +43,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Get the button
     var button = document.querySelector('#print_multiple');
+    selected_date = document.getElementById('start').value;
+
 
 
     // Add event listener to the button
@@ -64,11 +67,11 @@ document.addEventListener('DOMContentLoaded', function () {
         // Open the new window with the url
 
         // Get the selected date from the date picker
-        var date = document.getElementById('start').value;
+        selected_date = document.getElementById('start').value;
 
         // If a date is selected, append it to the URL
-        if (date) {
-            url += "&date=" + date;
+        if (selected_date) {
+            url += "&date=" + selected_date;
         }
 
 
@@ -134,7 +137,7 @@ function detallesPrinter(detalles) {
     const PRECIOS_ESPECIALES = HUEVOS.map((el) => "$" + el);
 
     const HUEVOS_COMPRADOS = {}
-    
+
     console.log('+++++++++++++++++++++++');
     console.log(HUEVOS);
     console.log(detalles)
@@ -165,7 +168,7 @@ function detallesPrinter(detalles) {
 
 }
 
-function get_remito_link(cliente, {date = ""} = {}) {
+function get_remito_link(cliente, { date = "" } = {}) {
     let url = `remito.html?cliente=${cliente}`
     if (date) {
         url += `&date=${date}`
@@ -188,9 +191,10 @@ function maker(json) {
 
         celdaCliente.innerHTML = el["cliente"];
 
-
+        selected_date = document.getElementById('start').value;
+        console.log("SELECTED_DATE", selected_date)
         // celdaRemito.innerHTML = el.remito;
-        const link = get_remito_link(el.cliente)
+        const link = get_remito_link(el.cliente, { date: selected_date })
         celdaLink.innerHTML = `<a target="_blank" href="${link}">Ver</a>`
 
         // Create basic details
